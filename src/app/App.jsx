@@ -1,13 +1,14 @@
 import React from "react";
 import Nav from "@shared/ui/Nav";
-import PlayerProvider from "@features/player/ui/PlayerProvider";
+import { PlayerProvider } from "@hooks/PlayerContext";
 
 function App({ children }) {
   return (
     <>
-      <main className="mb-30">{children}</main>
-      <PlayerProvider />
-      <Nav />
+      <PlayerProvider>
+        <main className="mb-30">{children}</main>
+        <Nav />
+      </PlayerProvider>
     </>
   );
 }
