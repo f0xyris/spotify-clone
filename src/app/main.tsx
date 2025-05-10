@@ -1,13 +1,14 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RouterProvider, createRouter, createHashHistory  } from '@tanstack/react-router';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from '@routeTree';
 import { Provider } from "react-redux";
 import {store} from "@shared/store/store.js";
 import { PlayerProvider } from "@hooks/PlayerContext";
+import { createBrowserHistory } from '@tanstack/history'
 
-const history = createHashHistory();
+const history = createBrowserHistory();
 const router = createRouter({ routeTree, history })
 
 const queryClient = new QueryClient({

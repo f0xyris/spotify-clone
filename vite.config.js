@@ -3,10 +3,8 @@ import path from 'path';
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import { ghPages } from "vite-plugin-gh-pages";
 
 export default defineConfig({
-  base: '/spotify-clone',
   plugins: [
     TanStackRouterVite({
       routeFileIgnorePattern: '/*.{js,jsx}',
@@ -15,8 +13,7 @@ export default defineConfig({
     tailwindcss(), 
     react({
       fastRefresh: true,
-    }),
-    ghPages(),
+    })
   ],
   server: {
     host: '127.0.0.1',
