@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     TanStackRouterVite({
       routeFileIgnorePattern: '/*.{js,jsx}',
-      generatedRouteTree: './src/routeTree.gen.ts',
+      generatedRouteTree: '@routeTree.gen.ts',
     }), 
     tailwindcss(), 
     react({

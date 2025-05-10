@@ -3,12 +3,11 @@
     "baseUrl": "src",
     "paths": {
       "@app/*": ["app/*"],
-      "@assets/*": ["assets/*"],
       "@entities/*": ["entities/*"],
       "@features/*": ["features/*"],
       "@hooks/*": ["hooks/*"],
       "@shared/*": ["shared/*"],
-      "@pages/*": ["pages/*"],
+      "@routes/*": ["routes/*"],
       "@routeTree": ["routeTree.gen.ts"]
     },
     "target": "esnext",
