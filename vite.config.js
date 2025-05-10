@@ -6,7 +6,7 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import { ghPages } from "vite-plugin-gh-pages";
 
 export default defineConfig({
-  base: '/spotify-clone/',
+  base: '/spotify-clone',
   plugins: [
     TanStackRouterVite({
       routeFileIgnorePattern: '/*.{js,jsx}',
@@ -37,7 +37,7 @@ export default defineConfig({
     }
   },
   build: {
-    chunkSizeWarningLimit: 800,
+    chunkSizeWarningLimit: 4000,
     rollupOptions: {
       output: {
         manualChunks(id) {
