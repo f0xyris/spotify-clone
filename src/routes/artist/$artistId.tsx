@@ -1,3 +1,4 @@
+import React from 'react'
 import { useParams, useLocation } from '@tanstack/react-router';
 import { createFileRoute } from '@tanstack/react-router';
 import { getArtistAlbums, getArtistTopTracks } from '@shared/api/spotifyClient';

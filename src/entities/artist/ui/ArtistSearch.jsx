@@ -1,3 +1,4 @@
+import React from "react";
 import SearchInput from "@shared/ui/SearchInput";
 import CartItem from "@shared/ui/CartItem";
 import SearchHistory from "@features/search/ui/SearchHistory";
