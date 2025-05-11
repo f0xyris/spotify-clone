@@ -3,6 +3,7 @@ import path from 'path';
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+import vercel from 'vite-plugin-vercel'
 
 export default defineConfig({
   plugins: [
@@ -13,7 +14,8 @@ export default defineConfig({
     tailwindcss(), 
     react({
       fastRefresh: true,
-    })
+    }),
+    vercel(),
   ],
   server: {
     host: '127.0.0.1',
@@ -21,6 +23,7 @@ export default defineConfig({
       overlay: false
     }
   },
+  base: process.env.VITE_BASE_PATH || '/spotify-clone',
   resolve: {
     alias: {
       '@app': path.resolve(__dirname, 'src/app'),
