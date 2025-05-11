@@ -23,7 +23,6 @@ export default defineConfig({
       overlay: false
     }
   },
-  base: process.env.VITE_BASE_PATH || '/spotify-clone',
   resolve: {
     alias: {
       '@app': path.resolve(__dirname, 'src/app'),
