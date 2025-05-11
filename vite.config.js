@@ -37,18 +37,5 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 4000,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'react-vendor';
-            if (id.includes('youtube')) return 'youtube-sdk';
-            if (id.includes('redux')) return 'redux';
-            if (id.includes('react-query')) return 'react-query';
-            return 'vendor';
-          }
-        },
-      },
-    },
   },
 })
