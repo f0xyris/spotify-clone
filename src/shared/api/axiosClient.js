@@ -29,7 +29,7 @@ export const getAccessToken = async () => {
 export const getSpotifyAuthUrl = () => {
   const AUTH_ENDPOINT = import.meta.env.VITE_SPOTIFY_AUTH_ENDPOINT;
   const clientID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-  const REDIRECT_URI = encodeURIComponent(import.meta.env.VITE_SPOTIFY_REDIRECT_URL);
+  const REDIRECT_URI = encodeURIComponent(import.meta.env.VITE_SPOTIFY_REDIRECT_URL || 'http://127.0.0.1:5173/callback');
   const RESPONSE_TYPE = 'code';
   const SCOPES = [
     'user-read-private',

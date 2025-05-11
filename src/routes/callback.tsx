@@ -19,7 +19,7 @@ function Callback() {
           new URLSearchParams({
             grant_type: 'authorization_code',
             code,
-            redirect_uri: import.meta.env.VITE_SPOTIFY_REDIRECT_URL,
+            redirect_uri: import.meta.env.VITE_SPOTIFY_REDIRECT_URL || 'http://127.0.0.1:5173/callback',
           }),
           {
             headers: {
