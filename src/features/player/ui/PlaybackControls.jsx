@@ -31,6 +31,7 @@ function PlaybackControls() {
           <FaPlay className="fill-black w-5 h-5" />
         )}
       </button>
+      <h1></h1>
     </div>
   );
 }
