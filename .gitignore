@@ -22,6 +22,7 @@ out
 .env.development
 .env.test
 .env.production
+.vercel/output/
 
 # Editor directories and files
 .vscode/*
