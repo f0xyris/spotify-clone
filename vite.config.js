@@ -3,7 +3,6 @@ import path from 'path';
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
-import vercel from 'vite-plugin-vercel'
 
 export default defineConfig({
   plugins: [
@@ -15,7 +14,6 @@ export default defineConfig({
     react({
       fastRefresh: true,
     }),
-    vercel(),
   ],
   server: {
     host: '127.0.0.1',
