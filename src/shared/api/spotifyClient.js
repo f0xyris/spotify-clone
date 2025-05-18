@@ -20,6 +20,16 @@ export const searchArtists = async (searchQuery) => {
   }
 };
 
+export const getArtist = async (artistId) => {
+  try {
+    const data = await spotifyApiRequest(`/artists/${artistId}`);
+    return data;
+  } catch (error) {
+    console.error('Error getting artist info:', error);
+    throw error;
+  }
+};
+
 export const getArtistTopTracks = async (artistId) => {
   try {
     const data = await spotifyApiRequest(`/artists/${artistId}/top-tracks`, {
@@ -49,6 +59,16 @@ export const getArtistAlbums = async(artistId) => {
   }
 }
 
+export const getAlbum = async (albumId) => {
+  try {
+    const data = await spotifyApiRequest(`/albums/${albumId}`);
+    return data;
+  } catch (error) {
+    console.error('Error getting album:', error);
+    throw error;
+  }
+};
+
 export const getAllCategories = async () => {
   try{
     const data = await spotifyApiRequest(`/browse/categories` , {
@@ -61,3 +81,13 @@ export const getAllCategories = async () => {
     console.log(error)
   }
 }
+
+export const getTrack = async (trackId) => {
+  try {
+    const data = await spotifyApiRequest(`/tracks/${trackId}`);
+    return data;
+  } catch (error) {
+    console.error('Error getting track:', error);
+    throw error;
+  }
+};

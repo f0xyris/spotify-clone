@@ -5,10 +5,15 @@ const PlayerContext = createContext({
   isPlaying: false,
   duration: 0,
   elapsed: 0,
-  setPlayer: (player) => {},
+  currentVideoId: null,
+  isPlayerReady: false,
+  setPlayer: () => {},
   togglePlay: () => {},
-  setDuration: (duration) => {},
-  setElapsed: (elapsed) => {},
+  setDuration: () => {},
+  setElapsed: () => {},
+  setIsPlaying: () => {},
+  setCurrentVideoId: () => {},
+  setIsPlayerReady: () => {},
 });
 
 export const PlayerProvider = ({ children }) => {
@@ -16,17 +21,31 @@ export const PlayerProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [elapsed, setElapsed] = useState(0);
+  const [currentVideoId, setCurrentVideoId] = useState(null);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
 
-  const togglePlay = useCallback(() => {
-    if (player) {
-      if (isPlaying) {
-        player.pauseVideo();
-      } else {
+  const togglePlay = useCallback(
+    (forcePlay) => {
+      if (!player) return;
+
+      if (forcePlay === true) {
         player.playVideo();
+        setIsPlaying(true);
+      } else if (forcePlay === false) {
+        player.pauseVideo();
+        setIsPlaying(false);
+      } else {
+        if (isPlaying) {
+          player.pauseVideo();
+          setIsPlaying(false);
+        } else {
+          player.playVideo();
+          setIsPlaying(true);
+        }
       }
-      setIsPlaying((prev) => !prev);
-    }
-  }, [player, isPlaying]);
+    },
+    [player, isPlaying]
+  );
 
   return (
     <PlayerContext.Provider
@@ -35,10 +54,15 @@ export const PlayerProvider = ({ children }) => {
         isPlaying,
         duration,
         elapsed,
+        currentVideoId,
+        isPlayerReady,
         setPlayer,
         togglePlay,
         setDuration,
         setElapsed,
+        setIsPlaying,
+        setCurrentVideoId,
+        setIsPlayerReady,
       }}
     >
       {children}

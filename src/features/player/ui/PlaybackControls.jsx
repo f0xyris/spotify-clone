@@ -2,36 +2,43 @@ import React from "react";
 import { FaPlay } from "react-icons/fa";
 import { IoIosPause } from "react-icons/io";
 import { MdFavoriteBorder } from "react-icons/md";
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useYouTubePlayer } from "@hooks/useYouTubePlayer";
-import YouTube from "react-youtube";
+import { useSelector, useDispatch } from "react-redux";
+import { setTrack } from "@features/play-track/model/trackSlice";
+import { setPlayerVisibility } from "@features/play-track/model/playerSlice";
 import { usePlayer } from "@hooks/PlayerContext";
 
-function PlaybackControls() {
-  const { player, isPlaying, togglePlay, duration, elapsed } = usePlayer();
-  const [progress, setProgress] = useState(0);
+function PlaybackControls({ track }) {
+  const { isPlaying, togglePlay, setIsPlaying, isPlayerReady } = usePlayer();
+  const selectedTrack = useSelector((state) => state.track.selectedTrack);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (player && elapsed >= 0) {
-      setProgress((elapsed / duration) * 100);
+  const handlePlayPause = () => {
+    if (!track) return;
+
+    if (selectedTrack?.id === track.id) {
+      togglePlay();
+    } else {
+      dispatch(setTrack(track));
+      dispatch(setPlayerVisibility(true));
+      setIsPlaying(true);
     }
-  }, [elapsed, player, duration]);
+  };
+
+  const isCurrentTrackPlaying = selectedTrack?.id === track?.id && isPlaying;
 
   return (
-    <div className="flex justify-between items-center mt-4 pb-3">
-      <MdFavoriteBorder className="text-3xl mr-3 object-contain flex-shrink-0 fill-white/50" />
+    <div className="flex justify-between items-center pb-3 md:max-w-50 md:flex-row-reverse">
+      <MdFavoriteBorder className="text-3xl mr-3 object-contain flex-shrink-0 fill-white/50 cursor-pointer" />
       <button
-        onClick={togglePlay}
-        className="text-2xl mr-3 object-contain flex-shrink-0 bg-green-600 rounded-full w-15 h-15 flex items-center justify-center"
+        onClick={handlePlayPause}
+        className="text-2xl mr-3 flex-shrink-0 bg-green-600 rounded-full w-15 h-15 flex items-center justify-center cursor-pointer hover:brightness-110 transition-all duration-200"
       >
-        {isPlaying ? (
+        {isCurrentTrackPlaying ? (
           <IoIosPause className="fill-black w-5 h-5" />
         ) : (
           <FaPlay className="fill-black w-5 h-5" />
         )}
       </button>
-      <h1></h1>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import { Link } from "@tanstack/react-router";
 
 const Nav = () => {
   return (
-    <nav className="flex flex-row justify-between text-white bg-black w-full fixed bottom-0 z-10 border-t border-gray-300">
+    <nav className="flex flex-row justify-between text-white bg-black fixed bottom-0 z-10 border-t border-gray-300 w-full">
       <Link to="/" className="group text-gray-600 [&.active]:text-white">
         <div className="flex flex-col items-center p-4 cursor-pointer">
           <PiHouse className="w-6 h-6" />

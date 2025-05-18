@@ -4,7 +4,7 @@ import { useRouter } from "@tanstack/react-router";
 import BackButton from "@shared/ui/BackButton";
 
 function ArtistMainInfo({ artistInfo }) {
-  const { name, image, followers, searchQuery } = artistInfo || {};
+  const { name, images, followers, searchQuery } = artistInfo || {};
   const router = useRouter();
 
   const handleBack = () => {
@@ -16,7 +16,7 @@ function ArtistMainInfo({ artistInfo }) {
   };
 
   return (
-    <div className="m-4">
+    <>
       <IoMdArrowBack
         className="m-4 w-8 h-8 cursor-pointer"
         onClick={handleBack}
@@ -26,7 +26,7 @@ function ArtistMainInfo({ artistInfo }) {
           width="200"
           height="200"
           className="rounded-full w-[200px] h-[200px] object-cover flex items-center justify-center shrink-0"
-          src={image}
+          src={images?.[0]?.url}
           alt=""
         />
       </div>
@@ -36,7 +36,7 @@ function ArtistMainInfo({ artistInfo }) {
         </h1>
         <p> {new Intl.NumberFormat().format(followers?.total)} - фоловеров</p>
       </div>
-    </div>
+    </>
   );
 }
 

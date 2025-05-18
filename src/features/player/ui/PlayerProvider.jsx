@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { searchYouTube } from "@shared/api/youtubeclient";
+import { MdFavoriteBorder } from "react-icons/md";
 import { FaPlay } from "react-icons/fa";
 import { IoIosPause } from "react-icons/io";
-import { MdFavoriteBorder } from "react-icons/md";
-import { useYouTubePlayer } from "@hooks/useYouTubePlayer";
 import { usePlayer } from "@hooks/PlayerContext";
+import { useYouTubePlayer } from "@hooks/useYouTubePlayer";
 
 const YouTube = React.lazy(() => import("react-youtube"));
 
 const PlayerProvider = () => {
   const selectedTrack = useSelector((state) => state.track.selectedTrack);
+  const isPlayerVisible = useSelector((state) => state.player.isPlayerVisible);
+  const [videoIndex, setVideoIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+
   const {
     player,
     isPlaying,
@@ -20,93 +24,122 @@ const PlayerProvider = () => {
     elapsed,
     setElapsed,
     setDuration,
+    setPlayer,
+    setIsPlaying,
+    currentVideoId,
+    setCurrentVideoId,
+    isPlayerReady,
+    setIsPlayerReady,
   } = usePlayer();
-
-  const [progress, setProgress] = useState(0);
-  const { playerRef, onReady, playerDuration } = useYouTubePlayer(
-    isPlaying,
-    duration,
-    setElapsed
-  );
 
   const trackName = selectedTrack?.name || "";
   const artistName = selectedTrack?.artists?.[0]?.name || "";
   const artistImage = selectedTrack?.album?.images?.[0]?.url || "";
 
-  useEffect(() => {
-    console.log("Track name or artist name changed:", trackName, artistName);
-  }, [trackName, artistName]);
+  const { data: videoId } = useQuery({
+    queryKey: ["youtubeSearch", trackName, artistName],
+    queryFn: () => searchYouTube(`${trackName} ${artistName}`),
+    enabled: !!selectedTrack?.id,
+    staleTime: 1000 * 60 * 5,
+  });
 
   useEffect(() => {
-    if (player && elapsed >= 0) {
+    if (videoId?.items?.length) {
+      const newVideoId = videoId.items[videoIndex]?.id.videoId;
+      if (newVideoId && newVideoId !== currentVideoId) {
+        setCurrentVideoId(newVideoId);
+        setIsPlayerReady(false);
+        setElapsed(0);
+      }
+    }
+  }, [videoIndex, videoId]);
+
+  const handlePlayerError = () => {
+    if (videoId?.items && videoIndex + 1 < videoId.items.length) {
+      setVideoIndex(videoIndex + 1);
+    } else {
+      console.log("Нет доступных для встраивания видео");
+    }
+  };
+
+  useEffect(() => {
+    if (videoId && videoId !== currentVideoId) {
+      setCurrentVideoId(videoId);
+      setIsPlayerReady(false);
+      setElapsed(0);
+    }
+  }, [videoId]);
+
+  const { onReady } = useYouTubePlayer();
+
+  useEffect(() => {
+    if (player && elapsed >= 0 && duration > 0) {
       setProgress((elapsed / duration) * 100);
     }
   }, [elapsed, player, duration]);
 
   useEffect(() => {
-    if (playerDuration !== duration) {
-      setDuration(playerDuration);
+    if (isPlayerReady && player && currentVideoId && isPlaying) {
+      const timeout = setTimeout(() => {
+        try {
+          player.playVideo();
+        } catch (err) {
+          console.error("Ошибка автозапуска:", err);
+        }
+      }, 500);
+
+      return () => clearTimeout(timeout);
     }
-  }, [playerDuration, duration, setDuration]);
+  }, [isPlayerReady, player, currentVideoId, isPlaying]);
 
-  const {
-    data: videoId,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["youtubeSearch", trackName, artistName],
-    queryFn: () => searchYouTube(`${trackName} ${artistName}`),
-    enabled: !!selectedTrack?.id && !!trackName && !!artistName,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  if (!selectedTrack?.id || !isPlaying) return null;
+  if (!selectedTrack?.id) return null;
 
   return (
-    <div className="fixed bottom-20 bg-cyan-950/60 left-1 right-1 p-2 rounded-md">
-      <div className="flex flex-row max-h-10 justify-between items-center gap-4">
-        <img
-          src={artistImage}
-          alt={artistName}
-          className="object-contain flex-shrink-0 w-10 h-10 rounded-md"
-        />
-        <div className="flex flex-col items-start w-full">
-          <h1 className="text-xl">{artistName}</h1>
-          <p className="text-xs">{trackName}</p>
-        </div>
-        <MdFavoriteBorder className="text-3xl mr-3 object-contain flex-shrink-0 fill-white/50" />
-        <button
-          className="text-2xl mr-3 object-contain flex-shrink-0"
-          onClick={togglePlay}
-        >
-          {isPlaying ? <IoIosPause /> : <FaPlay />}
-        </button>
-      </div>
-      <div className="h-1 w-full bg-white/30 mt-2 relative rounded">
-        <span
-          className="h-1 bg-white/80 absolute rounded"
-          style={{ width: `${progress}%` }}
-        ></span>
-      </div>
-      {isLoading && console.log("Загрузка")}
-      {isError && console.log("Ошибка")}
-      {videoId && (
-        <Suspense fallback={<div>Загрузка плеера...</div>}>
-          <YouTube
-            videoId={videoId}
-            opts={{
-              height: "0",
-              width: "0",
-              playerVars: {
-                controls: 0,
-                modestbranding: 1,
-                rel: 0,
-              },
-            }}
-            onReady={onReady}
+    <div className="fixed bottom-20 left-2 right-2 p-2 rounded-md z-10 bg-cyan-800/80">
+      <div className="relative w-full h-auto">
+        <div className="flex flex-row justify-between items-center gap-4">
+          <img
+            src={artistImage}
+            alt={artistName}
+            className="w-10 h-10 rounded-md"
           />
-        </Suspense>
-      )}
+          <div className="flex flex-col w-full">
+            <h1 className="text-xl">{artistName}</h1>
+            <p className="text-xs">{trackName}</p>
+          </div>
+          <div className="flex gap-8">
+            <MdFavoriteBorder className="text-3xl fill-white/50 flex-shrink-0 cursor-pointer" />
+            <button
+              onClick={togglePlay}
+              className="text-2xl z-21 flex-shrink-0 mr-2 cursor-pointer"
+            >
+              {isPlaying ? <IoIosPause /> : <FaPlay />}
+            </button>
+          </div>
+        </div>
+        <div className="h-1 w-full bg-white/30 mt-2 relative rounded">
+          <span
+            className="h-1 bg-white/80 absolute rounded"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        {currentVideoId && (
+          <Suspense>
+            <YouTube
+              videoId={currentVideoId}
+              onError={handlePlayerError}
+              opts={{
+                height: "0",
+                width: "0",
+                playerVars: { controls: 0, modestbranding: 1 },
+              }}
+              onReady={(event) => {
+                onReady(event);
+              }}
+            />
+          </Suspense>
+        )}
+      </div>
     </div>
   );
 };

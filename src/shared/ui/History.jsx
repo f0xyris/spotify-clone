@@ -4,7 +4,7 @@ import { TbMoodCrazyHappy } from "react-icons/tb";
 import { Link } from "@tanstack/react-router";
 import { MdOutlineClose } from "react-icons/md";
 
-const CartItem = React.memo(function CartItem({
+const History = React.memo(function History({
   data,
   onSelect,
   histored,
@@ -12,7 +12,8 @@ const CartItem = React.memo(function CartItem({
   query,
 }) {
   return (
-    <ul className="space-y-2 mt-5">
+    <ul className="space-y-2 mt-5 p-4 gap-2 flex flex-col">
+      <span className="text-lg font-bold">История поиска</span>
       {data?.map((artist) => (
         <Link
           to={`/artist/${artist.id}`}
@@ -26,7 +27,7 @@ const CartItem = React.memo(function CartItem({
           className="flex flex-col gap-2"
         >
           <li
-            className="p-2 rounded shadow flex items-center gap-4 cursor-pointer"
+            className="rounded shadow flex items-center gap-4 cursor-pointer"
             onClick={() => {
               onSelect(artist);
             }}
@@ -79,4 +80,4 @@ const CartItem = React.memo(function CartItem({
   );
 });
 
-export default CartItem;
+export default History;

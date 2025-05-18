@@ -63,7 +63,6 @@ export const getUserProfile = async () => {
     const accessToken = localStorage.getItem('access_token');
   
       if(!accessToken) {
-        console.log('Токен не найден')
         return
       }
   

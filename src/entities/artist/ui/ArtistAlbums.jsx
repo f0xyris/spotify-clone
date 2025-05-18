@@ -1,10 +1,14 @@
 import React from "react";
-import CartSlider from "@shared/ui/CartSlider";
+import CartSlider from "@shared/ui/ItemSlider";
 
-function ArtistAlbums({ albums }) {
+function ArtistAlbums({ albums, artistInfo }) {
   return (
     <>
-      <CartSlider header="Альбомы" item={albums} hideItem={false} />
+      <CartSlider
+        header={`${artistInfo?.name || albums?.[0]?.artists?.[0]?.name}: популярные альбомы`}
+        item={albums}
+        hideItem={false}
+      />
     </>
   );
 }

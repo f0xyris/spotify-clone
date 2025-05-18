@@ -1,6 +1,6 @@
 import React from "react";
-import SearchInput from "@shared/ui/SearchInput";
-import CartItem from "@shared/ui/CartItem";
+import SearchInput from "@shared/ui/Search";
+import CartItem from "@shared/ui/History";
 import SearchHistory from "@features/search/ui/SearchHistory";
 import { IoMdArrowBack } from "react-icons/io";
 import useArtistSearch from "@hooks/useArtistSearch";
@@ -25,8 +25,10 @@ export default function ArtistSearch() {
   } = useArtistSearch();
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="flex flex-col p-4">
+    <div className="mx-auto">
+      <div
+        className={`flex flex-col p-4 ${focused ? "bg-[#181818]" : "bg-black"}`}
+      >
         {!focused && <h1 className="pb-5 text-white text-3xl">Искать</h1>}
         <div className="flex items-center gap-4 w-full">
           {focused && <BackButton onClick={navBack} />}

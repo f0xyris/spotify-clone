@@ -1,16 +1,8 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { setTrack } from "@features/play-track/model/trackSlice";
 import { Link } from "@tanstack/react-router";
 
-function CartSlider({ header, item, hideItem }) {
-  const dispatch = useDispatch();
-
-  const handleTrack = (trackItem) => {
-    const track = album.track || album; // получаем именно трек
-    dispatch(setTrack(track));
-  };
-
+function ItemSlider({ header, item, hideItem }) {
   const getImageUrl = (item) => {
     const track = item?.track || item;
     return track?.album?.images?.[0]?.url || track?.images?.[0]?.url || null;
@@ -30,18 +22,8 @@ function CartSlider({ header, item, hideItem }) {
           overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 px-4 "
       >
         {item?.map((album) => (
-          <Link
-            key={album?.id || album?.track?.id}
-            to={getPath(album)}
-            state={{
-              name: album.name,
-              image: album.images?.[0]?.url ?? null,
-              followers: album.followers,
-              obj: album.track || album,
-            }}
-          >
+          <Link key={album?.id || album?.track?.id} to={getPath(album)}>
             <div
-              onClick={() => handleTrack(album)}
               className="flex flex-col items-start justify-baseline flex-shrink-0
                   snap-center mb-10 h-auto cursor-pointer"
             >
@@ -68,4 +50,4 @@ function CartSlider({ header, item, hideItem }) {
   );
 }
 
-export default CartSlider;
+export default ItemSlider;

@@ -49,7 +49,7 @@ function Menu({ onCloseMenu }) {
                   ? handleLogout
                   : undefined
             }
-            className="text-2xl hover:scale-110 transition-transform duration-200 cursor-pointer"
+            className="text-2xl hover:-translate-x-3 transition-all duration-200 cursor-pointer "
           >
             {item}
           </li>
@@ -60,7 +60,7 @@ function Menu({ onCloseMenu }) {
         {secondaryMenu.map((item, index) => (
           <li
             key={index}
-            className="hover:scale-110 transition-transform duration-200 cursor-pointer"
+            className="hover:-translate-x-3 transition-transform duration-200 cursor-pointer"
           >
             {item}
           </li>

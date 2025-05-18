@@ -1,22 +1,20 @@
-import React , { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { setPlayerVisibility, setIsPlaying, togglePlay } from "@features/play-track/model/playerSlice";
+import { useEffect, useRef, useState } from "react";
 import { usePlayer } from "@hooks/PlayerContext";
 
-export const useYouTubePlayer = (isPlaying, duration, updateElapsed) => { 
-  const dispatch = useDispatch();
+export const useYouTubePlayer = () => {
   const playerRef = useRef(null);
   const intervalRef = useRef(null);
-  const { setPlayer, setDuration, setElapsed } = usePlayer();
+  const { setPlayer, setDuration, setElapsed, isPlaying, setIsPlayerReady } = usePlayer();
   const [playerDuration, setPlayerDuration] = useState(0);
 
   const onReady = (event) => {
     const ytPlayer = event.target;
     playerRef.current = ytPlayer;
-    setPlayer(ytPlayer); 
-    setPlayerDuration(ytPlayer.getDuration());
-    setDuration(ytPlayer.getDuration());
-    dispatch(setIsPlaying(false));
+    setPlayer(ytPlayer);
+    const dur = ytPlayer.getDuration();
+    setPlayerDuration(dur);
+    setDuration(dur);
+    setIsPlayerReady(true);
   };
 
   useEffect(() => {
@@ -24,38 +22,21 @@ export const useYouTubePlayer = (isPlaying, duration, updateElapsed) => {
 
     if (isPlaying && playerRef.current) {
       intervalRef.current = setInterval(() => {
-        updateElapsed((prev) => { 
+        setElapsed(prev => {
           if (prev >= playerDuration) {
             clearInterval(intervalRef.current);
-            dispatch(setIsPlaying(false));
             return 0;
           }
           return prev + 1;
         });
       }, 1000);
-
       playerRef.current.playVideo();
-    } else if (!isPlaying && playerRef.current) {
+    } else if (playerRef.current) {
       playerRef.current.pauseVideo();
     }
 
     return () => clearInterval(intervalRef.current);
-  }, [isPlaying, playerDuration, dispatch, updateElapsed]);
+  }, [isPlaying, playerDuration]);
 
-  const togglePlayHandler = () => {
-    const player = playerRef.current;
-    if (!player) {
-      return;
-    }
-
-    if (isPlaying) {
-      player.pauseVideo();
-    } else {
-      player.playVideo();
-    }
-
-    dispatch(togglePlay());
-  };
-
-  return { playerRef, onReady, togglePlayHandler, playerDuration };
+  return { onReady, playerRef };
 };

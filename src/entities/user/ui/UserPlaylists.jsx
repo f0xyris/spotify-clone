@@ -11,8 +11,6 @@ function UserPlaylists() {
   isLoading && <div>Loading...</div>;
   isError && console.log("Error on userPlaylist");
 
-  console.log(data);
-
   return (
     <div className="gap-4 flex flex-col p-4">
       <h3 className="text-2xl pb-5">Моя медиатека</h3>

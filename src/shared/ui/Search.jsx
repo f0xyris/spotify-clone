@@ -2,7 +2,7 @@ import React from "react";
 import { CiSearch } from "react-icons/ci";
 import { MdOutlineClose } from "react-icons/md";
 
-function SearchInput({ query, setQuery, setFocused, focused }) {
+function Search({ query, setQuery, setFocused, focused }) {
   return (
     <div className="flex w-full items-center gap-3 h-10 p-3 pl-4 justify-between bg-white text-md rounded">
       <CiSearch className={`fill-black  ${focused ? "w-6 h-6" : "w-8 h-8"}`} />
@@ -27,4 +27,4 @@ function SearchInput({ query, setQuery, setFocused, focused }) {
   );
 }
 
-export default SearchInput;
+export default Search;

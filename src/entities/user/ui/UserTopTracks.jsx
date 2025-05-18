@@ -1,5 +1,5 @@
 import React from "react";
-import CartSlider from "@shared/ui/CartSlider";
+import CartSlider from "@shared/ui/ItemSlider";
 import { useUserTopItems } from "@hooks/useUserTopItems";
 
 function UserTopTracks() {

@@ -1,5 +1,5 @@
 import React from "react";
-import CartItem from "@shared/ui/CartItem";
+import CartItem from "@shared/ui/History";
 
 export default function SearchHistory({
   historySearch,
@@ -9,7 +9,7 @@ export default function SearchHistory({
 }) {
   if (historySearch.length === 0) {
     return (
-      <div className="flex flex-col mt-10 gap-5">
+      <div className="flex flex-col gap-4 p-4">
         <h2 className="font-bold text-xl">Слушай то, что нравится</h2>
         <h3 className="text-sm">
           Находи исполнителей, треки, подкасты и не только.
@@ -27,7 +27,7 @@ export default function SearchHistory({
         onRemove={onRemove}
       />
       <button
-        className="flex px-5 py-2 text-white rounded-xl font-semibold mx-auto mt-4 border-white border-1 cursor-pointer hover:bg-gray-700 transition-colors duration-300"
+        className="flex px-5 py-2 text-white rounded-2xl font-semibold mx-auto mt-4 border-white border-1 cursor-pointer hover:bg-gray-700 transition-colors duration-300"
         onClick={onClear}
       >
         Очистить историю

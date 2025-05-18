@@ -1,5 +1,5 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useParams } from '@tanstack/react-router'
 import TrackMainPage from '@entities/track/ui/TrackMainPage'
 
 export const Route = createFileRoute('/track/$trackId')({
@@ -7,7 +7,10 @@ export const Route = createFileRoute('/track/$trackId')({
 })
 
 function Track() {
+  const params = useParams({ from: '/track/$trackId' });
+  const { trackId } = params;
+
   return <div>
-    <TrackMainPage />
+    <TrackMainPage trackId={trackId}/>
   </div>
 }

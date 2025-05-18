@@ -1,85 +1,57 @@
-import React, { useEffect } from "react";
-import { useLocation } from "@tanstack/react-router";
-import { getArtistTopTracks, getArtistAlbums } from "@shared/api/spotifyClient";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import {
+  getTrack,
+  getArtist,
+  getArtistTopTracks,
+  getArtistAlbums,
+} from "@shared/api/spotifyClient";
 import ArtistTopTracks from "@entities/artist/ui/ArtistTopTracks";
 import ArtistAlbums from "@entities/artist/ui/ArtistAlbums";
 import PlaybackControls from "@features/player/ui/PlaybackControls";
 import BackButton from "@shared/ui/BackButton";
+import PlaylistMainInfo from "@entities/playlist/ui/PlaylistMainInfo";
 
-function TrackMainPage() {
-  const location = useLocation();
-  const { obj } = location.state;
-  const artistId = obj?.artists?.[0]?.id;
-  const albumId = obj?.album?.id;
+function TrackMainPage({ trackId }) {
+  const { data: trackData, isLoading: trackLoading } = useQuery({
+    queryKey: ["track", trackId],
+    queryFn: () => getTrack(trackId),
+    enabled: !!trackId,
+  });
 
-  console.log(obj);
+  const artistId = trackData?.artists?.[0]?.id;
 
-  const {
-    data: tracksData,
-    isLoading: tracksIsLoading,
-    isError: tracksIsError,
-  } = useQuery({
+  const { data: artistData, isLoading: artistLoading } = useQuery({
+    queryKey: ["artist", artistId],
+    queryFn: () => getArtist(artistId),
+    enabled: !!artistId,
+  });
+
+  const { data: tracksData, isLoading: tracksLoading } = useQuery({
     queryKey: ["tracks", artistId],
     queryFn: () => getArtistTopTracks(artistId),
+    enabled: !!artistId,
   });
 
-  const {
-    data: albumbsData,
-    isLoading: albumbsIsLoading,
-    isError: albumbsIsError,
-  } = useQuery({
+  const { data: albumsData, isLoading: albumsLoading } = useQuery({
     queryKey: ["albums", artistId],
     queryFn: () => getArtistAlbums(artistId),
+    enabled: !!artistId,
   });
 
-  (tracksIsLoading || albumbsIsLoading) && <p>Loading tracks...</p>;
-  (tracksIsError || albumbsIsError) &&
-    console.log("Error with loading artist top tracks");
+  if (trackLoading || artistLoading || tracksLoading || albumsLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!trackData) {
+    return <p>Track not found</p>;
+  }
 
   return (
     <div>
-      <div className=" bg-gradient-to-b from-orange-500 to-black-900 p-4">
-        <BackButton />
-        <div className="flex flex-col items-center justify-center">
-          <img
-            width="200"
-            height="200"
-            className=" w-[200px] h-[200px] object-cover flex items-center justify-center shrink-0"
-            src={
-              obj.track?.album.images?.[0]?.url || obj?.album.images?.[0]?.url
-            }
-            alt=""
-          />
-        </div>
-        <div className="flex flex-col pt-4 gap-2">
-          <h1 className="text-2xl font-bold items-start">{obj.name}</h1>
-          <div className="flex gap-3">
-            {obj?.artists?.map((artist) => (
-              <span key={artist.name}>{artist.name}</span>
-            ))}
-          </div>
-
-          <div className="flex gap-2 text-white/60">
-            <span>{obj?.album?.release_date.slice(0, 4)}</span> •
-            <span>
-              {obj?.album?.total_tracks === 1
-                ? `${obj?.album?.total_tracks} трек`
-                : `${obj?.album?.total_tracks} треков`}
-            </span>{" "}
-            •
-            <span>
-              {Math.floor(obj.duration_ms / 1000 / 60)}:
-              {Math.floor((obj.duration_ms / 1000) % 60)
-                .toString()
-                .padStart(2, "0")}{" "}
-            </span>
-          </div>
-        </div>
-        <PlaybackControls />
-      </div>
-      <ArtistTopTracks artist={obj?.artists?.[0]?.name} tracks={tracksData} />
-      <ArtistAlbums albums={albumbsData} />
+      <PlaylistMainInfo obj={trackData} />
+      <ArtistTopTracks artist={artistData} tracks={tracksData} />
+      <ArtistAlbums albums={albumsData} />
     </div>
   );
 }

@@ -8,8 +8,8 @@ export const Route = createFileRoute("/search")({
 
 function Search() {
   return (
-    <div className="p-2">
+    <>
       <ArtistSearch />
-    </div>
+    </>
   );
 }
