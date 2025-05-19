@@ -25,8 +25,11 @@ function PlaybackControls({ track }) {
 
       if (playerRef.current && isPlayerReady) {
         try {
-          playerRef.current.unMute?.();
           playerRef.current.playVideo();
+
+          setTimeout(() => {
+            playerRef.current.unMute?.();
+          }, 300);
         } catch (err) {
           console.error("Ошибка запуска с клика:", err);
         }

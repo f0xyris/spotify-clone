@@ -29,8 +29,8 @@ export const useYouTubePlayer = () => {
           return prev + 1;
         });
       }, 1000);
-    } else if (playerRef.current) {
-      playerRef.current.pauseVideo();
+    } else {
+
     }
 
     return () => clearInterval(intervalRef.current);

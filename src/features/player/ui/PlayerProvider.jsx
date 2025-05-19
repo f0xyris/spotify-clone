@@ -78,20 +78,6 @@ const PlayerProvider = () => {
     }
   }, [elapsed, player, duration]);
 
-  useEffect(() => {
-    if (isPlayerReady && player && currentVideoId && isPlaying) {
-      const timeout = setTimeout(() => {
-        try {
-          player.playVideo();
-        } catch (err) {
-          console.error("Ошибка автозапуска:", err);
-        }
-      }, 500);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [isPlayerReady, player, currentVideoId, isPlaying]);
-
   if (!selectedTrack?.id) return null;
 
   return (
@@ -133,8 +119,10 @@ const PlayerProvider = () => {
                 width: "0",
                 playerVars: {
                   autoplay: 1,
+                  mute: 1,
                   controls: 0,
                   modestbranding: 1,
+                  playsinline: 1,
                 },
               }}
               onReady={(event) => {
