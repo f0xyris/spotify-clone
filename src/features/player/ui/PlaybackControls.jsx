@@ -8,7 +8,8 @@ import { setPlayerVisibility } from "@features/play-track/model/playerSlice";
 import { usePlayer } from "@hooks/PlayerContext";
 
 function PlaybackControls({ track }) {
-  const { isPlaying, togglePlay, setIsPlaying, isPlayerReady } = usePlayer();
+  const { isPlaying, togglePlay, setIsPlaying, isPlayerReady, playerRef } =
+    usePlayer();
   const selectedTrack = useSelector((state) => state.track.selectedTrack);
   const dispatch = useDispatch();
 
@@ -21,6 +22,9 @@ function PlaybackControls({ track }) {
       dispatch(setTrack(track));
       dispatch(setPlayerVisibility(true));
       setIsPlaying(true);
+      if (playerRef.current) {
+        playerRef.current.playVideo();
+      }
     }
   };
 

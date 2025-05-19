@@ -2,9 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePlayer } from "@hooks/PlayerContext";
 
 export const useYouTubePlayer = () => {
-  const playerRef = useRef(null);
   const intervalRef = useRef(null);
-  const { setPlayer, setDuration, setElapsed, isPlaying, setIsPlayerReady } = usePlayer();
+  const { setPlayer, setDuration, setElapsed, isPlaying, setIsPlayerReady, playerRef } = usePlayer();
   const [playerDuration, setPlayerDuration] = useState(0);
 
   const onReady = (event) => {
@@ -30,7 +29,6 @@ export const useYouTubePlayer = () => {
           return prev + 1;
         });
       }, 1000);
-      playerRef.current.playVideo();
     } else if (playerRef.current) {
       playerRef.current.pauseVideo();
     }

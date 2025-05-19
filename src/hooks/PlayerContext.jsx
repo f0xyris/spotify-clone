@@ -1,5 +1,12 @@
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 
+// Контекст с начальными значениями
 const PlayerContext = createContext({
   player: null,
   isPlaying: false,
@@ -7,6 +14,8 @@ const PlayerContext = createContext({
   elapsed: 0,
   currentVideoId: null,
   isPlayerReady: false,
+  playerRef: null,
+  setPlayerRef: () => {},
   setPlayer: () => {},
   togglePlay: () => {},
   setDuration: () => {},
@@ -23,6 +32,12 @@ export const PlayerProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0);
   const [currentVideoId, setCurrentVideoId] = useState(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
+
+  const playerRef = useRef(null); // ✅ сначала создаём ref
+
+  const setPlayerRef = (ref) => {
+    playerRef.current = ref;
+  };
 
   const togglePlay = useCallback(
     (forcePlay) => {
@@ -56,6 +71,8 @@ export const PlayerProvider = ({ children }) => {
         elapsed,
         currentVideoId,
         isPlayerReady,
+        playerRef,
+        setPlayerRef,
         setPlayer,
         togglePlay,
         setDuration,
