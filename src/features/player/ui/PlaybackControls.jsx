@@ -17,27 +17,20 @@ function PlaybackControls({ track }) {
     if (!track) return;
 
     if (selectedTrack?.id === track.id) {
-      if (playerRef.current) {
-        if (isPlaying) {
-          playerRef.current.pauseVideo();
-          setIsPlaying(false);
-        } else {
-          playerRef.current.playVideo();
-          playerRef.current.unMute();
-          setIsPlaying(true);
-        }
-      }
+      togglePlay();
     } else {
       dispatch(setTrack(track));
       dispatch(setPlayerVisibility(true));
       setIsPlaying(true);
 
-      setTimeout(() => {
-        if (playerRef.current) {
+      if (playerRef.current && isPlayerReady) {
+        try {
+          playerRef.current.unMute?.();
           playerRef.current.playVideo();
-          playerRef.current.unMute();
+        } catch (err) {
+          console.error("Ошибка запуска с клика:", err);
         }
-      }, 500);
+      }
     }
   };
 
