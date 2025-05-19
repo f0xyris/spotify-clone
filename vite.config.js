@@ -30,7 +30,7 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, 'src/hooks'),
       '@shared': path.resolve(__dirname, 'src/shared'),
       '@pages': path.resolve(__dirname, 'src/pages'),
-      '@routeTree': path.resolve(__dirname, 'src/routeTree.gen.ts') 
+      '@routeTree': path.resolve(__dirname, '@routeTree.gen.ts') 
     }
   },
   build: {

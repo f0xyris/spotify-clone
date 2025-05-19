@@ -5,52 +5,88 @@ import { CgUnavailable } from "react-icons/cg";
 import { Link } from "@tanstack/react-router";
 
 const PlaylistTracks = ({ tracks }) => {
-  console.log(tracks);
+  if (!tracks || tracks.length === 0) {
+    return <div className="p-4 text-center text-gray-500">Треков нет</div>;
+  }
+
   return (
-    <div className="flex flex-col gap-4 mt-7">
-      {tracks?.map((track, index) => (
-        <Link
-          key={track.id || track.track.id}
-          to={`/${track.type}/${track.id}`}
-        >
-          <div
-            style={track.is_playable === false ? { opacity: 0.2 } : {}}
-            className="flex items-center gap-4"
-          >
-            <span>{index}</span>
-            {track?.album?.images?.[0]?.url && (
-              <img
-                width="80"
-                height="80"
-                className="w-[80px] h-[80px]"
-                src={track.album.images?.[0]?.url}
-                alt={track.name}
-              />
-            )}
+    <div
+      className={`flex flex-col gap-4 mt-7 ${tracks[0]?.album ? "px-4" : "p-0"}`}
+    >
+      {tracks.map((trackWrapper, index) => {
+        // Если трек вложен (например, плейлист треки), берем track.track, иначе сам объект
+        const track = trackWrapper.track || trackWrapper;
 
-            <div className="flex flex-col items-start justify-center md:flex-row md:justify-evenly">
-              <h1>{track.name}</h1>
-              <p className="flex items-center gap-2">
-                {Math.floor(track.duration_ms / 1000 / 60)}.
-                {Math.floor((track.duration_ms / 1000) % 60)
-                  .toString()
-                  .padStart(2, "0")}{" "}
-                min
-                {track.explicit && <MdOutlineExplicit />}
-                {track.popularity > 85 && (
-                  <AiFillFire className="fill-amber-700" />
-                )}
-              </p>
+        // Безопасное получение id и type
+        const trackId = track?.id || `unknown-${index}`;
+        const trackType = track?.type || "track";
 
-              {track.is_playable === false && (
-                <span className="text-gray-500 text-xs flex items-center gap-2">
-                  <CgUnavailable /> Недоступно в вашем регионе
-                </span>
+        // Проверяем есть ли изображение
+        const imageUrl = track?.album?.images?.[0]?.url;
+
+        // Проверяем наличие артистов
+        const artists = track?.artists || [];
+
+        return (
+          <Link key={trackId} to={`/${trackType}/${trackId}`}>
+            <div
+              style={trackWrapper.is_playable === false ? { opacity: 0.5 } : {}}
+              className="flex items-center gap-4 cursor-pointer hover:bg-white/10 p-4 rounded-md overflow-hidden"
+            >
+              {/* Если нет album — показываем номер трека */}
+              {!track.album && <span className="text-lg w-6">{index + 1}</span>}
+
+              {/* Изображение трека */}
+              {imageUrl && (
+                <img
+                  width={80}
+                  height={80}
+                  className="w-[80px] h-[80px] object-cover rounded"
+                  src={imageUrl}
+                  alt={track.name}
+                />
               )}
+
+              <div className="flex items-start justify-baseline w-full flex-col md:flex-row">
+                <div className="flex flex-col flex-1">
+                  <div className="font-bold text-white truncate">
+                    {track.name}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1 text-sm text-gray-300">
+                    {artists.map((artist, i) => (
+                      <span key={artist.id || i}>
+                        {i > 0 && ", "}
+                        {artist.name}
+                      </span>
+                    ))}
+                    {track.explicit && (
+                      <MdOutlineExplicit className="w-5 h-5 inline-block" />
+                    )}
+                    {track.popularity > 85 && (
+                      <AiFillFire className="fill-amber-700 inline-block" />
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end text-sm text-gray-400">
+                  <span>
+                    {Math.floor(track.duration_ms / 1000 / 60)}:
+                    {Math.floor((track.duration_ms / 1000) % 60)
+                      .toString()
+                      .padStart(2, "0")}
+                  </span>
+
+                  {trackWrapper.is_playable === false && (
+                    <span className="text-gray-500 text-xs flex items-center gap-1 mt-1">
+                      <CgUnavailable /> Недоступно в вашем регионе
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        </Link>
-      ))}
+          </Link>
+        );
+      })}
     </div>
   );
 };

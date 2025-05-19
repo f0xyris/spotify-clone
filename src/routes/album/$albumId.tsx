@@ -1,5 +1,5 @@
 import React from 'react'
-import { createFileRoute, useParams } from '@tanstack/react-router'
+import { createFileRoute, useLocation, useParams } from '@tanstack/react-router'
 import AlbumMainPage from '@entities/album/ui/AlbumMainPage';
 
 export const Route = createFileRoute('/album/$albumId')({
@@ -7,10 +7,9 @@ export const Route = createFileRoute('/album/$albumId')({
 })
 
 function Album() {
-  const params = useParams({ from: '/album/$albumId' });
-  const { albumId } = params;
+  const { albumId } = useParams({ from: '/album/$albumId' });
 
   return <div>
-    <AlbumMainPage albumId={albumId}/>
+    <AlbumMainPage albumId={albumId} type="album"/>
   </div>
 }

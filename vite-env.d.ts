@@ -7,8 +7,12 @@ interface ImportMetaEnv {
     readonly VITE_SPOTIFY_REDIRECT_URL: string;
     readonly VITE_SPOTIFY_AUTH_ENDPOINT: string;
     readonly VITE_YOUTUBE_API_KEY: string;
-  }
+}
   
-  interface ImportMeta {
-    readonly env: ImportMetaEnv;
-  }
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+declare module '@routeTree' {
+  export const routeTree: any;
+}

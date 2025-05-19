@@ -21,11 +21,11 @@ function ItemSlider({ header, item, hideItem }) {
         className="flex flex-row items-baseline justify-baseline 
           overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 px-4 "
       >
-        {item?.map((album) => (
+        {item?.map((album, index) => (
           <Link key={album?.id || album?.track?.id} to={getPath(album)}>
             <div
               className="flex flex-col items-start justify-baseline flex-shrink-0
-                  snap-center mb-10 h-auto cursor-pointer"
+                  snap-center h-auto cursor-pointer"
             >
               <img
                 src={getImageUrl(album)}

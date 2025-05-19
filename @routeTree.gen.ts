@@ -12,12 +12,12 @@
 
 import { Route as rootRoute } from './src/routes/__root'
 import { Route as SearchImport } from './src/routes/search'
-import { Route as PlaylistImport } from './src/routes/playlist'
 import { Route as DownloadImport } from './src/routes/download'
 import { Route as CallbackImport } from './src/routes/callback'
+import { Route as PlaylistImport } from './src/routes/$playlist'
 import { Route as IndexImport } from './src/routes/index'
 import { Route as TrackTrackIdImport } from './src/routes/track/$trackId'
-import { Route as PlaylistPlaylistIdImport } from './src/routes/playlist/playlistId'
+import { Route as PlaylistPlaylistIdImport } from './src/routes/playlist/$playlistId'
 import { Route as ArtistIdImport } from './src/routes/artist/$id'
 import { Route as ArtistArtistIdImport } from './src/routes/artist/$artistId'
 import { Route as AlbumAlbumIdImport } from './src/routes/album/$albumId'
@@ -30,12 +30,6 @@ const SearchRoute = SearchImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const PlaylistRoute = PlaylistImport.update({
-  id: '/playlist',
-  path: '/playlist',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const DownloadRoute = DownloadImport.update({
   id: '/download',
   path: '/download',
@@ -45,6 +39,12 @@ const DownloadRoute = DownloadImport.update({
 const CallbackRoute = CallbackImport.update({
   id: '/callback',
   path: '/callback',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PlaylistRoute = PlaylistImport.update({
+  id: '/$playlist',
+  path: '/$playlist',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -61,9 +61,9 @@ const TrackTrackIdRoute = TrackTrackIdImport.update({
 } as any)
 
 const PlaylistPlaylistIdRoute = PlaylistPlaylistIdImport.update({
-  id: '/playlistId',
-  path: '/playlistId',
-  getParentRoute: () => PlaylistRoute,
+  id: '/playlist/$playlistId',
+  path: '/playlist/$playlistId',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const ArtistIdRoute = ArtistIdImport.update({
@@ -95,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/$playlist': {
+      id: '/$playlist'
+      path: '/$playlist'
+      fullPath: '/$playlist'
+      preLoaderRoute: typeof PlaylistImport
+      parentRoute: typeof rootRoute
+    }
     '/callback': {
       id: '/callback'
       path: '/callback'
@@ -107,13 +114,6 @@ declare module '@tanstack/react-router' {
       path: '/download'
       fullPath: '/download'
       preLoaderRoute: typeof DownloadImport
-      parentRoute: typeof rootRoute
-    }
-    '/playlist': {
-      id: '/playlist'
-      path: '/playlist'
-      fullPath: '/playlist'
-      preLoaderRoute: typeof PlaylistImport
       parentRoute: typeof rootRoute
     }
     '/search': {
@@ -144,12 +144,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistIdImport
       parentRoute: typeof rootRoute
     }
-    '/playlist/playlistId': {
-      id: '/playlist/playlistId'
-      path: '/playlistId'
-      fullPath: '/playlist/playlistId'
+    '/playlist/$playlistId': {
+      id: '/playlist/$playlistId'
+      path: '/playlist/$playlistId'
+      fullPath: '/playlist/$playlistId'
       preLoaderRoute: typeof PlaylistPlaylistIdImport
-      parentRoute: typeof PlaylistImport
+      parentRoute: typeof rootRoute
     }
     '/track/$trackId': {
       id: '/track/$trackId'
@@ -163,55 +163,43 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-interface PlaylistRouteChildren {
-  PlaylistPlaylistIdRoute: typeof PlaylistPlaylistIdRoute
-}
-
-const PlaylistRouteChildren: PlaylistRouteChildren = {
-  PlaylistPlaylistIdRoute: PlaylistPlaylistIdRoute,
-}
-
-const PlaylistRouteWithChildren = PlaylistRoute._addFileChildren(
-  PlaylistRouteChildren,
-)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$playlist': typeof PlaylistRoute
   '/callback': typeof CallbackRoute
   '/download': typeof DownloadRoute
-  '/playlist': typeof PlaylistRouteWithChildren
   '/search': typeof SearchRoute
   '/album/$albumId': typeof AlbumAlbumIdRoute
   '/artist/$artistId': typeof ArtistArtistIdRoute
   '/artist/$id': typeof ArtistIdRoute
-  '/playlist/playlistId': typeof PlaylistPlaylistIdRoute
+  '/playlist/$playlistId': typeof PlaylistPlaylistIdRoute
   '/track/$trackId': typeof TrackTrackIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$playlist': typeof PlaylistRoute
   '/callback': typeof CallbackRoute
   '/download': typeof DownloadRoute
-  '/playlist': typeof PlaylistRouteWithChildren
   '/search': typeof SearchRoute
   '/album/$albumId': typeof AlbumAlbumIdRoute
   '/artist/$artistId': typeof ArtistArtistIdRoute
   '/artist/$id': typeof ArtistIdRoute
-  '/playlist/playlistId': typeof PlaylistPlaylistIdRoute
+  '/playlist/$playlistId': typeof PlaylistPlaylistIdRoute
   '/track/$trackId': typeof TrackTrackIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/$playlist': typeof PlaylistRoute
   '/callback': typeof CallbackRoute
   '/download': typeof DownloadRoute
-  '/playlist': typeof PlaylistRouteWithChildren
   '/search': typeof SearchRoute
   '/album/$albumId': typeof AlbumAlbumIdRoute
   '/artist/$artistId': typeof ArtistArtistIdRoute
   '/artist/$id': typeof ArtistIdRoute
-  '/playlist/playlistId': typeof PlaylistPlaylistIdRoute
+  '/playlist/$playlistId': typeof PlaylistPlaylistIdRoute
   '/track/$trackId': typeof TrackTrackIdRoute
 }
 
@@ -219,63 +207,65 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$playlist'
     | '/callback'
     | '/download'
-    | '/playlist'
     | '/search'
     | '/album/$albumId'
     | '/artist/$artistId'
     | '/artist/$id'
-    | '/playlist/playlistId'
+    | '/playlist/$playlistId'
     | '/track/$trackId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$playlist'
     | '/callback'
     | '/download'
-    | '/playlist'
     | '/search'
     | '/album/$albumId'
     | '/artist/$artistId'
     | '/artist/$id'
-    | '/playlist/playlistId'
+    | '/playlist/$playlistId'
     | '/track/$trackId'
   id:
     | '__root__'
     | '/'
+    | '/$playlist'
     | '/callback'
     | '/download'
-    | '/playlist'
     | '/search'
     | '/album/$albumId'
     | '/artist/$artistId'
     | '/artist/$id'
-    | '/playlist/playlistId'
+    | '/playlist/$playlistId'
     | '/track/$trackId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PlaylistRoute: typeof PlaylistRoute
   CallbackRoute: typeof CallbackRoute
   DownloadRoute: typeof DownloadRoute
-  PlaylistRoute: typeof PlaylistRouteWithChildren
   SearchRoute: typeof SearchRoute
   AlbumAlbumIdRoute: typeof AlbumAlbumIdRoute
   ArtistArtistIdRoute: typeof ArtistArtistIdRoute
   ArtistIdRoute: typeof ArtistIdRoute
+  PlaylistPlaylistIdRoute: typeof PlaylistPlaylistIdRoute
   TrackTrackIdRoute: typeof TrackTrackIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PlaylistRoute: PlaylistRoute,
   CallbackRoute: CallbackRoute,
   DownloadRoute: DownloadRoute,
-  PlaylistRoute: PlaylistRouteWithChildren,
   SearchRoute: SearchRoute,
   AlbumAlbumIdRoute: AlbumAlbumIdRoute,
   ArtistArtistIdRoute: ArtistArtistIdRoute,
   ArtistIdRoute: ArtistIdRoute,
+  PlaylistPlaylistIdRoute: PlaylistPlaylistIdRoute,
   TrackTrackIdRoute: TrackTrackIdRoute,
 }
 
@@ -290,30 +280,28 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/$playlist",
         "/callback",
         "/download",
-        "/playlist",
         "/search",
         "/album/$albumId",
         "/artist/$artistId",
         "/artist/$id",
+        "/playlist/$playlistId",
         "/track/$trackId"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/$playlist": {
+      "filePath": "$playlist.tsx"
+    },
     "/callback": {
       "filePath": "callback.tsx"
     },
     "/download": {
       "filePath": "download.tsx"
-    },
-    "/playlist": {
-      "filePath": "playlist.tsx",
-      "children": [
-        "/playlist/playlistId"
-      ]
     },
     "/search": {
       "filePath": "search.tsx"
@@ -327,9 +315,8 @@ export const routeTree = rootRoute
     "/artist/$id": {
       "filePath": "artist/$id.tsx"
     },
-    "/playlist/playlistId": {
-      "filePath": "playlist/playlistId.tsx",
-      "parent": "/playlist"
+    "/playlist/$playlistId": {
+      "filePath": "playlist/$playlistId.tsx"
     },
     "/track/$trackId": {
       "filePath": "track/$trackId.tsx"

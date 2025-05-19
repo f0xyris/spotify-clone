@@ -64,7 +64,9 @@ export const getAlbum = async (albumId) => {
     const data = await spotifyApiRequest(`/albums/${albumId}`);
     return data;
   } catch (error) {
-    console.error('Error getting album:', error);
+    if (error.data?.status === 404) {
+      return null;
+    }
     throw error;
   }
 };
@@ -91,3 +93,16 @@ export const getTrack = async (trackId) => {
     throw error;
   }
 };
+
+export const getPlaylist = async (playlist_id) => {
+  try {
+    const data = await spotifyApiRequest(`/playlists/${playlist_id}`);
+    return data;
+  } catch (error) {
+    if (error.data?.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+};
+
