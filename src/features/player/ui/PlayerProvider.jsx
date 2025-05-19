@@ -131,7 +131,11 @@ const PlayerProvider = () => {
               opts={{
                 height: "0",
                 width: "0",
-                playerVars: { controls: 0, modestbranding: 1 },
+                playerVars: {
+                  autoplay: 1,
+                  controls: 0,
+                  modestbranding: 1,
+                },
               }}
               onReady={(event) => {
                 onReady(event);

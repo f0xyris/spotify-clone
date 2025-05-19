@@ -17,14 +17,27 @@ function PlaybackControls({ track }) {
     if (!track) return;
 
     if (selectedTrack?.id === track.id) {
-      togglePlay();
+      if (playerRef.current) {
+        if (isPlaying) {
+          playerRef.current.pauseVideo();
+          setIsPlaying(false);
+        } else {
+          playerRef.current.playVideo();
+          playerRef.current.unMute();
+          setIsPlaying(true);
+        }
+      }
     } else {
       dispatch(setTrack(track));
       dispatch(setPlayerVisibility(true));
       setIsPlaying(true);
-      if (playerRef.current) {
-        playerRef.current.playVideo();
-      }
+
+      setTimeout(() => {
+        if (playerRef.current) {
+          playerRef.current.playVideo();
+          playerRef.current.unMute();
+        }
+      }, 500);
     }
   };
 
