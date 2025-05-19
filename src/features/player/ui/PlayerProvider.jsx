@@ -119,7 +119,6 @@ const PlayerProvider = () => {
                 width: "0",
                 playerVars: {
                   autoplay: 1,
-                  mute: 1,
                   controls: 0,
                   modestbranding: 1,
                   playsinline: 1,
